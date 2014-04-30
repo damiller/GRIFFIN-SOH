@@ -1,0 +1,65 @@
+- Copied the files in isdaq01:/home/bnmr/epics  to  midtis08:/home/e1023/online/epics
+
+- Modified Makefile to point to correct MIDAS and EPICS libraries
+
+- Modified generic.c  
+    gen_info->update_threshold[i] = 2.f; /* default 2 units */ 
+becomes 
+    gen_info->update_threshold[i] = 1.f; /* default 1 units */
+
+- >make
+
+- Added the EPICS environment variables to ~.cshrc
+setenv EPICS_CA_AUTO_ADDR_LIST YES
+setenv EPICS_CA_REPEATER_PORT 9003
+setenv EPICS_CA_SERVER_PORT 9004
+setenv EPICS_CA_ADDR_LIST 142.90.133.255
+
+- > ./fe_epics   
+   When program is run for the first time, it creates the ODB structures for 20 generic EPICS variables. 
+   Exit the program and modify the ODB to point to correct EPICS variables:
+  >odb
+[local:e1023:Stopped]/>cd /equipment/epics/Settings
+[local:e1023:Stopped]Settings>ls Channels/
+Epics                           20          ! Increase this number if you want to access more than
+                                            ! the scaler variables 
+[local:e1023:Stopped]Settings>cd Devices/Epics
+[local:e1023:Stopped]Epics>set "Channel name[0]" "HEBT3:VAR1"
+[local:e1023:Stopped]Epics>set "Channel name[1]" "HEBT3:VAR2"
+... etc ... all the way to 
+[local:e1023:Stopped]Epics>set "Channel name[19]" "HEBT3:VAR20"
+[local:e1023:Stopped]Epics>cd ../..
+[local:e1023:Stopped]Settings>set names[19] "Watchdog"
+and set names of other scaler channels you will be sending to Epics
+
+- > ./fe_epics   Now watch the values from the web by clicking on Equipment -> Epics
+
+You can send values manually by clicking on a value and changing it but you 
+probably want one of your frontend programs to fill the ODB with some scaler values
+by code like this: 
+
+At init time: 
+
+  HNDLE  hDB, hEPD
+  float fTemp;
+
+  status=cm_get_experiment_database(&hDB, NULL);
+  status = db_find_key(hDB, 0, "/equipment/epics/variables/demand", &hEPD);
+
+
+and in your scaler loop 
+for example, to write a value to the 3rd value in the array (HEBT3:VAR3)
+
+  fTemp = (float) scaler[back_cyc].sum_cycle;
+  db_set_data_index(hDB, hEPD, &fTemp, sizeof(fTemp), 2, TID_FLOAT);
+
+where "2" correspond to the index in the array [0,19]
+
+-----------------------------------------------------------------------------------
+
+ 
+
+ 
+
+
+ 
