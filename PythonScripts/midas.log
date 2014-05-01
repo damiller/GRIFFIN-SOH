@@ -1,3 +1,0 @@
-Thu Jan  8 14:51:58 2009 [ODBEdit,ERROR] [odb.c:1079:db_open_database,ERROR] Removing client 'Epics', pid 3183, index 1 because the pid no longer exists
-Fri Apr 25 14:03:44 2014 [Epics,INFO] Deleted entry '/System/Clients/24604' for client 'mhttpd'
-Fri Apr 25 14:03:44 2014 [Epics,INFO] Deleted entry '/System/Clients/24610' for client 'Logger'

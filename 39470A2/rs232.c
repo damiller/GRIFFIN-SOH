@@ -684,9 +684,9 @@ int rs232_init(int port, int baud, char parity, int data_bit, int stop_bit,
   //  printf(" tcsetattr status =%d errno %s\n", status, strerror(errno));
   
   speed =  cfgetispeed (&termios_p);
-  printf("getispeed status =%d, ospeed:%d \n", status, speed);
+  // printf("getispeed status =%d, ospeed:%d \n", status, speed);
   speed =  cfgetospeed (&termios_p);
-  printf("getospeed status =%d, ispeed:%d \n", status, speed);
+  // printf("getospeed status =%d, ispeed:%d \n", status, speed);
   
   printf("Handle:%d port:%s baud=%d parity=%c data=%d stop=%d\n"
 	 ,hDev, str, Baud[i].speed,

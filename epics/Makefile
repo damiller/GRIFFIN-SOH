@@ -58,6 +58,8 @@ CC = cc
 CFLAGS += -g -I. -I$(MIDASINCDIR) -I$(DRV_DIR)/device -I$(DRV_DIR)/class -I$(EPICSINCDIR) 
 # for newer version of epics lib
 CFLAGS += -I$(EPICSINCDIR)/os/Linux -I$(EPICSINCDIR)/compiler/gcc -I$(EPICS_DIR)/src/ca/client
+CFLAGS += -I$(EPICS_DIR)/src/ca
+
 #ifeq ($(MIDAS32BIT),1) 
 #	CFLAGS += -m32
 #	LDFLAGS += -m32
