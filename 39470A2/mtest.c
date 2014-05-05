@@ -16,7 +16,7 @@ int main (void)
   SOURCE:VOLT 5.777,(@304)
   SOURCE:VOLT 4.555,(@304)
 */
-  hDev = rs232_init(0, 9600, 'N', 8, 1, 0);
+  hDev = rs232_init(0, 57600, 'N', 8, 1, 0);
   
   if (hDev)
   {

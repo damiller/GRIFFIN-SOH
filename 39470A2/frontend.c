@@ -295,7 +295,7 @@ INT frontend_loop()
       /* Now put the local counter in a file, too */
       {
          FILE *fp;
-         char fn[] = "/home1/tigsoh/THERfe.counter";
+         char fn[] = "/home1/grifsoh/THERfe.counter"; // FIX THIS
          if ((fp = fopen(fn, "w+")) == 0) {     /* open for creation & overwriting */
             cm_msg(MERROR, "frontend_loop", "Opening watchdog counter %s: %s", fn, strerror());
          } else {
