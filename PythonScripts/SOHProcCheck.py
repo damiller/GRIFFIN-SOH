@@ -32,17 +32,17 @@ timeout = 60 # Timeout for touched files
 #                  verify that it is still running.
 
 dictTHERfe  ={ 'procName' : 'THERfe',
-               'execute'  : '/home1/tigsoh/daq/39470A2/THERfe -D',
-	       'touchFile': '/home1/tigsoh/THERfe.counter' }
+               'execute'  : '%s/39470A2/THERfe -D' % os.environ['SOHBASEDIR'],
+	       'touchFile': '%s/THERfe.counter' % os.environ['HOME']}
 
 dictmhttpd  ={ 'procName' : 'mhttpd',
-               'execute'  : '/opt/midas/linux/bin/mhttpd -p 8081 -D' }
+               'execute'  : '%s/linux/bin/mhttpd -p 8081 -D' % os.environ['MIDASSYS']}
 
 dictmlogger ={ 'procName' : 'mlogger',
-               'execute'  : '/opt/midas/linux/bin/mlogger -D' }
+               'execute'  : '%s/linux/bin/mlogger -D' % os.environ['MIDASSYS']}
 
 dictEPICSfe ={ 'procName' : 'fe_epics',
-               'execute'  : '/home1/tigsoh/daq/epics/startEPICSfe' }
+               'execute'  : '%s/epics/startEPICSfe' % os.environ['SOHBASEDIR'] }
 
 listofprocs =[ dictmhttpd, dictmlogger, dictTHERfe , dictEPICSfe ]	       
 
@@ -112,7 +112,7 @@ if 'MIDAS_EXPTAB' in os.environ:
     if (debug):
         print 'MIDAS_EXPTAB variable found and equals ',
 else:
-    os.environ['MIDAS_EXPTAB']='/home1/tigsoh/Experiments/exptab'
+    os.environ['MIDAS_EXPTAB']='%s/Experiments/exptab' % os.environ['HOME']
     if (debug):
         print 'MIDAS_EXPTAB not found in environment:  forced to ',
 if (debug):
@@ -124,10 +124,14 @@ for procDict in listofprocs:
     procName = procDict['procName']
     execute =  procDict['execute']
     
+    listofPIDs = seekProcs(procName)
     # Get time since last "touch", if needed
     if 'touchFile' in procDict:
-        deltaTime = int(time.time())-os.stat(procDict['touchFile'])[stat.ST_MTIME] 
-    listofPIDs = seekProcs(procName)
+        if (os.path.isfile(procDict['touchFile']) == False):
+            SUBJ += procName
+            BODY += procName + " touch file does not exist\n"
+        else:
+            deltaTime = int(time.time())-os.stat(procDict['touchFile'])[stat.ST_MTIME] 
     if (debug):
        print procName + " " + `listofPIDs` + " " + `deltaTime`
     # If everything's normal, then the file will have been touched and the PID list will have 1 #
@@ -139,7 +143,7 @@ for procDict in listofprocs:
     if deltaTime > 0:
         BODY += "          file untouched %s seconds \n" % deltaTime
     killProcs(listofPIDs) # kill -9 any outstanding processes
-    os.system("/opt/midas/linux/bin/odbedit -c cleanup") # Cleanup
+    os.system('%s/linux/bin/odbedit -c cleanup' % os.environ['MIDASSYS']) # Cleanup
     BODY += "          Restart with command " + execute + "\n"
     os.system(execute)
     listofPIDS = seekProcs(procName)

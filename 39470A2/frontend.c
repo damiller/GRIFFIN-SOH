@@ -233,8 +233,8 @@ INT frontend_loop()
    char watchdog_str[MAX_ODB_PATH];
 
    /* Yield for a while to not use all CPU cycles */
-   cm_yield(250);               /* similar to EPICS dwell time */
-   if (!hDB) {
+   cm_yield(250);               /* similar to EPICS dwell time */ 
+  if (!hDB) {
       /* Block of code for getting handles */
       if (cm_get_experiment_database(&hDB, NULL) != CM_SUCCESS) {
          cm_msg(MERROR, "frontend_loop",
@@ -295,7 +295,8 @@ INT frontend_loop()
       /* Now put the local counter in a file, too */
       {
          FILE *fp;
-         char fn[] = "/home1/grifsoh/THERfe.counter"; // FIX THIS
+         char fn[100];
+	 snprintf(fn,100,"%s/THERfe.counter", getenv("HOME")); //? make an ODB parameter
          if ((fp = fopen(fn, "w+")) == 0) {     /* open for creation & overwriting */
             cm_msg(MERROR, "frontend_loop", "Opening watchdog counter %s: %s", fn, strerror());
          } else {

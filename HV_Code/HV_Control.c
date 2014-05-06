@@ -1,13 +1,18 @@
 //INCLUDE FILES
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
-#include "caenhvoslib.h"
-#include "CAENHVWrapper.h"
+
 #include <termios.h>
 #include <stdbool.h>
+
+#include <netdb.h>
+#include <arpa/inet.h>
+
+#include "caenhvoslib.h"
+#include "CAENHVWrapper.h"
+
 
 /*****************************************************************************/
 
@@ -37,20 +42,6 @@ typedef struct ParPropTag {
    char Onstate[30], Offstate[30];
 } ParProp;
 
-//HV Power Supply names
-/*
-char *Sys00 = "tighv00";
-char *Sys01 = "tighv01";
-char *Sys02 = "tighv02";
-char *Sys03 = "tighv03";
-*/
-
-//HV Power supply IP addresses
-char *HvIp[4] = { "142.90.97.143", // tighv00
-		  "142.90.97.225", // tighv01
-		  "142.90.97.226", // tighv02
-		  "142.90.102.110" }; // tighv03 
-
 //HV Power Supply Connection Type
 const int LinkType = LINKTYPE_TCPIP;
 
@@ -63,7 +54,7 @@ static struct termios default_settings;
 static int settings_changed = 0;
 
 //Other
-char System[77] = "tighv07";
+char System[77] = "Undefined";
 int SlotMap[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 int SystemHandle = 0;
 
@@ -74,9 +65,8 @@ unsigned short NrOfChList[50];
 
 //FUNCTION DEFINITIONS
 
-int WhichSystem();
 int UserLogin(int systemNumber);
-int System_Init(int systemNumber);
+int System_Init(const char *hostname);
 int System_Deinit(void);
 int System_Prop(int systemNumber);
 int Crate_Map();
@@ -116,10 +106,9 @@ main(int argc, char *argv[])
       strcpy(Password, "admin");
 
       strcpy(System, argv[1]);
-      num[0] = System[6];
       systemNumber = atoi(num);
 
-      returnCode = System_Init(systemNumber);
+      returnCode = System_Init(System);
 
       strcpy(action, argv[2]);
 
@@ -157,7 +146,6 @@ main(int argc, char *argv[])
       if (bool1 == 0) {
          returnCode = Power_All();
       };
-
    }
 
    else {
@@ -168,10 +156,6 @@ main(int argc, char *argv[])
             fprintf(stderr, "Login Failed: %s\n");
             goto login;
          };
-
-         //determine which system we're working with 
-         systemNumber = WhichSystem();
-
       }
 
       else if (argc == 2) {
@@ -179,12 +163,9 @@ main(int argc, char *argv[])
          strcpy(Password, "admin");
 
          strcpy(System, argv[1]);
-         num[0] = System[6];
-         systemNumber = atoi(num);
-
       }
       //initialize system   
-      returnCode = System_Init(systemNumber);
+      returnCode = System_Init(System);
       if (returnCode) {
          fprintf(stderr, "Initialization Failed: %s\n",
                  CAENHV_GetError(SystemHandle));
@@ -265,64 +246,30 @@ int UserLogin(systemNumber)
    return 0;
 };
 
-
-/*****************************************************************************/
-//SYSTEM IDENTIFICATION FUNCTION                                              /
-/*****************************************************************************/
-//This function takes user input for system identification
-
-int WhichSystem()
-{
-   //Local Variables
-   int systemNumber = 4;
-   int bool1 = 1;
-
- start:
-   fprintf(stderr, "Which Power Supply Unit? (eg. tighv00)\n");
-   scanf("%s", System);
-
-   //test to see which system was inputted
-   bool1 = strcmp(System, "tighv00");
-   if (bool1 == 0) {
-      systemNumber = 0;
-   };
-
-   bool1 = strcmp(System, "tighv01");
-   if (bool1 == 0) {
-      systemNumber = 1;
-   };
-
-   bool1 = strcmp(System, "tighv02");
-   if (bool1 == 0) {
-      systemNumber = 2;
-   };
-
-   bool1 = strcmp(System, "tighv03");
-   if (bool1 == 0) {
-      systemNumber = 3;
-   };
-
-   while (systemNumber == 4)    //loops for invalid entries
-   {
-      fprintf(stderr, "Invalid System Entry.  Please re-enter. \n");
-      goto start;
-   };
-
-   //return the chosen system number
-   return systemNumber;
-};
-
-
 /*****************************************************************************/
 //SYSTEM INITIALIZATION FUNCTION                                              /
 /*****************************************************************************/
 //This function initializes the system
 
-int System_Init(int systemNumber)
+int System_Init(const char *hostname)
 {
+   char ipString[20];
+
    CAENHVRESULT returnCode = 0;
+   // do the hostname lookup
+   struct hostent *entity = gethostbyname(hostname);
+   if (entity == NULL) {
+      printf("Host %s not found.\n", hostname);
+      return CAENHV_COMMUNICATIONERROR;
+   }      
+   if (entity->h_addrtype != AF_INET) {
+      printf("Wrong address family.\n");
+      return CAENHV_COMMUNICATIONERROR;
+   }
+
+   struct in_addr *addr = (struct in_addr*)entity->h_addr_list[0];  
    returnCode = CAENHV_InitSystem(SY1527, LinkType, 
-				  (void *) HvIp[systemNumber],
+				  (void *) inet_ntoa(*addr),
 				  (const char *) UserName,
 				  (const char *) Password, 
 				  &SystemHandle);

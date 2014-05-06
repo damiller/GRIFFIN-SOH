@@ -19,7 +19,7 @@ This allows for some standard info to be put in like e-mail recipients
   HOST = "localhost"
   server = smtplib.SMTP(HOST)
   if TO==None:
-    FILE = open('/home1/tigsoh/daq/PythonScripts/email.txt')
+    FILE = open('%s/PythonScripts/email.txt' % os.environ['SOHBASEDIR'])
     TT = FILE.readlines()
     TO = []
     for toline in TT:

@@ -1,5 +1,8 @@
 MAILTO=""
-#
-@reboot /bin/sh -l -c $HOME/daq/PythonScripts/rebooted.py
-#
-0,5,10,15,20,25,30,35,40,45,50,55 * * * * /bin/sh -l -c $HOME/daq/PythonScripts/SOHProcCheck.py
+SOHBASEDIR=/home1/grifsoh/GRIFFIN-SOH
+MIDASSYS=/opt/midas
+MIDAS_EXPTAB=/home1/grifsoh/Experiments/exptab
+MIDAS_EXPT_NAME=grifsoh
+@reboot /bin/sh -l -c $SOHBASEDIR/PythonScripts/rebooted.py
+0,5,10,15,20,25,30,35,40,45,50,55 * * * * /bin/sh -l -c $SOHBASEDIR/PythonScripts/SOHProcCheck.py
+

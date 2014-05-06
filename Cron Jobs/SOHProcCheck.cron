@@ -1,3 +1,2 @@
-MAILTO=""
-#
-0,5,10,15,20,25,30,35,40,45,50,55 * * * * /bin/sh -l -c /home1/tigsoh/PythonScripts/SOHProcCheck.py
+0,5,10,15,20,25,30,35,40,45,50,55 * * * * /bin/sh -l -c $SOHBASEDIR/PythonScripts/SOHProcCheck.py
+

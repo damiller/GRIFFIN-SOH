@@ -65,5 +65,7 @@ endif
 ROOTANAINCDIR = $(ROOTANADIR)/include
 ROOTANAINTERFACE = $(ROOTANADIR)/libMidasInterface/libMidasInterface.a
 
+BASEDIR=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+
 CFLAGS += -I..
 CXXFLAGS += -I..
