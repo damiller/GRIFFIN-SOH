@@ -20,6 +20,12 @@ The VME frontend of choice is located in `VME/frontends/fewiener`.  The easiest 
 
 VME x can now be toggled on/off by flipping the bit at `/Equipment/VME-0x/Settings/mainSwitch`.
 
+###Epics & Agilent frontends
+As found in `epics` and `39470A2`; should run mostly out of the box.
+
+###`Alarms` configuration
+An example of how to configure the `Alarms` ODB directory is recorded in `alarmConfig`.
+
 ###Troubleshooting
 You'll need to give the midas user permissions to access the serial connection to the agilent; something like 
 `sudo usermod -a -G dialout grifsoh`
