@@ -14,7 +14,7 @@ The VME frontend of choice is located in `VME/frontends/fewiener`.  The easiest 
 
  - change each `FE_NAME` and `EQ_NAME` to something appropriate, like `grifvps0x` and `VME-0x` respectively
  - `make` in each directory
- - run all the frontends; they will immediately fail, you'll have to write their hostname into the ODB under `/Equipment/VME-0x/Settings/Hostname`
+ - run all the frontends; they will immediately fail, you'll have to write the hostname of the VME crate into the ODB under `/Equipment/VME-0x/Settings/Hostname`
  - run the frontends again; if all is well they should stay up
  - set `/Equipment/VME-0x/Settings/EnableControl` and `mainSwitch` (same path) both to 1.
 
