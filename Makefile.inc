@@ -49,7 +49,7 @@ EPICS_DIR=/opt/epics
 endif
 EPICSINCDIR = $(EPICS_DIR)/include
 ifeq ($(EPICS_LIB_DIR),)
-EPICS_LIB_DIR = $(EPICS_DIR)/lib/Linux
+EPICS_LIB_DIR = $(EPICS_DIR)/lib/linux-x86_64
 endif
 EPICSDRVDIR = $(MIDASSYS)/drivers/device
 
