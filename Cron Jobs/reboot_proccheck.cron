@@ -1,5 +1,5 @@
 MAILTO=""
-SOHBASEDIR=/home1/grifsoh/GRIFFIN-SOH
+SOHBASEDIR=/home1/grifsoh/Experiments/grifsoh/GRIFFIN-SOH
 MIDASSYS=/opt/midas
 MIDAS_EXPTAB=/home1/grifsoh/Experiments/exptab
 MIDAS_EXPT_NAME=grifsoh
