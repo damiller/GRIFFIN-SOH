@@ -56,7 +56,7 @@ extern "C" {
 
    char resp[512] = { "0.0" };
    int hDev = 0, nbytes = 0, status;
-   const int channelList[] = { 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115};
+   const int channelList[] = { 101, 102, 103, 104, 105, 106, 107, 108, 109, 110};
 
 
 /*-- Function declarations -----------------------------------------*/
@@ -144,20 +144,25 @@ INT frontend_init()
 
       //Scan List Initialization   
 
-      rs232_puts(hDev, "CONF:TEMP RTD,85,(@101)\n");
-      rs232_puts(hDev, "CONF:TEMP RTD,85,(@102)\n");
-      rs232_puts(hDev, "CONF:VOLT:DC (@103:115)\n");
+
+      //rs232_puts(hDev, "CONF:TEMP RTD,85,(@101:110)\n");
+      rs232_puts(hDev, "SENS:TEMP:TRAN:FRTD:TYPE,85,(@101:110)\n");
+
+      //rs232_puts(hDev, "CONF:TEMP RTD,85,(@101)\n");
+      //rs232_puts(hDev, "CONF:TEMP RTD,85,(@102)\n");
+      //rs232_puts(hDev, "CONF:VOLT:DC (@103:115)\n");
       // rs232_puts(hDev, "CALC:SCAL:GAIN 25,(@103)\r\n");
       //rs232_puts(hDev, "CALC:SCAL:OFFS 25,(@103)\r\n");
       //rs232_puts(hDev, "CALC:SCAL:GAIN 18.75,(@104)\r\n");
       // rs232_puts(hDev, "CALC:SCAL:OFFS 33.75,(@104)\r\n");
       //rs232_puts(hDev, "CALC:SCAL:STATE ON,(@103,104)\r\n");
-      rs232_puts(hDev, "ROUT:SCAN (@101:115)\n");
+      rs232_puts(hDev, "ROUT:SCAN (@101:110)\n");
 
 
 /*   rs232_puts(hDev, "*RST\r\n");
     rs232_puts(hDev, "*CLS\r\n");
-    rs232_puts(hDev, "CONF:TEMP THER,10000,(@101)\r\n");*/
+    rs232_puts(hDev, "CONF:TEMP THER,10000,(@101)\r\n");
+*/
 
       printf("Init Done\n");
       return SUCCESS;
